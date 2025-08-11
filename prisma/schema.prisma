@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Activity {
+  Berthing
+  Unberthing
+  SeaTrial
+  Shifting
+}
+enum ServiceStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String   // Hashed password
+  createdAt DateTime @default(now())
+}
+
+model PilotageService {
+  id             Int       @id @default(autoincrement())
+  doc_number     Int
+  id_jasa        Int
+  ship_name      String
+  master         String
+  agency         String
+  loa            Int
+  activity       Activity
+  from           String
+  to             String
+  last_port      String
+  next_port      String
+  pilot          String
+  pilot_on       DateTime
+  pilot_off      DateTime
+  tug_service_id Int
+  note           String?   // Nullable jika kadang kosong
+  status         ServiceStatus // enum lebih baik daripada String biasa
+  amount         Decimal   @db.Decimal(12, 2)
+  submited_by    String
+  submit_time    DateTime
+  created_by     String
+  createdAt      DateTime  @default(now()) // Sebaiknya tambahkan ini juga
+}
