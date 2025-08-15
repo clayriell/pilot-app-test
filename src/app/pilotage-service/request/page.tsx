@@ -184,10 +184,75 @@ export default function ServicePage() {
           <div className="max-w-7xl mx-auto">
             {/* Page Header */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Pilotage Activity
-              </h1>
+              <h6 className="text-3xl font-bold text-gray-900 mb-2">
+                Pilotage Request
+              </h6>
             </div>
+
+            {/* Stats Cards */}
+            {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-blue-100">
+                    <Ship className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">
+                      Total Requests
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {stats.total}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-yellow-100">
+                    <Clock className="w-6 h-6 text-yellow-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">Pending</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {stats.pending}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-blue-100">
+                    <Package className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">
+                      Approved
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {stats.approved}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex items-center">
+                  <div className="p-3 rounded-lg bg-green-100">
+                    <Plus className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-600">
+                      Completed
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {stats.completed}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div> */}
 
             {/* Controls */}
             <div className="bg-white rounded-lg shadow mb-6">
@@ -205,7 +270,7 @@ export default function ServicePage() {
                       />
                     </div>
 
-                    <select
+                    {/* <select
                       value={filter}
                       onChange={(e) => setFilter(e.target.value)}
                       className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -215,15 +280,15 @@ export default function ServicePage() {
                       <option value="approved">Approved</option>
                       <option value="completed">Completed</option>
                       <option value="rejected">Rejected</option>
-                    </select>
+                    </select> */}
                   </div>
-
+                  {/* not fix yet, new button could be removed */}
                   <Link
                     href="/pilotage-service/request/new"
                     className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    New Service
+                    New 
                   </Link>
                 </div>
               </div>

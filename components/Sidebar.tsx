@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { 
-  LayoutDashboard, 
-  Package, 
-  Heart, 
-  Inbox, 
-  Bell, 
-  Users, 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  LayoutDashboard,
+  Package,
+  Heart,
+  Inbox,
+  Bell,
+  Users,
   Calendar,
   Table,
   BarChart,
@@ -16,17 +16,22 @@ import {
   Target,
   Grid,
   Menu,
-  User2
-} from 'lucide-react'
-import { FaSheetPlastic, FaShip, FaTable } from 'react-icons/fa6'
-import { CiInboxIn } from 'react-icons/ci'
+  User2,
+} from "lucide-react";
+import { FaSheetPlastic, FaShip, FaTable } from "react-icons/fa6";
+import { CiInboxIn } from "react-icons/ci";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: false, path: '/' },
-  { icon: Inbox, label: 'Pilot Request', path: '/pilotage-service/request' },
-  { icon: FaShip, label: 'Pilot Activity', path: '/pilotage-service' },
-  { icon: FaSheetPlastic, label: 'Reports', path: '/reports' },
-]
+  {
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    active: false,
+    path: "/dashboard",
+  },
+  { icon: Inbox, label: "Pilot Request", path: "/pilotage-service/request" },
+  { icon: FaShip, label: "Pilot Activity", path: "/pilotage-service" },
+  { icon: FaSheetPlastic, label: "Reports", path: "/reports" },
+];
 
 // const pagesItems = [
 //   { icon: Target, label: 'Pricing', path: '/pricing' },
@@ -40,8 +45,8 @@ const menuItems = [
 // ]
 
 export default function Sidebar() {
-  const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -57,7 +62,9 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 overflow-y-auto z-40 transition-transform duration-300
-          ${open ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:block`}
+          ${
+            open ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 md:static md:block`}
       >
         {/* Logo */}
         <div className="p-6 border-b border-gray-200">
@@ -79,8 +86,8 @@ export default function Sidebar() {
                     onClick={() => router.push(item.path)}
                     className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                       item.active
-                        ? 'bg-primary text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        ? "bg-primary text-white"
+                        : "text-gray-700 hover:bg-gray-100"
                     }`}
                   >
                     <item.icon className="w-5 h-5 mr-3" />
@@ -90,7 +97,7 @@ export default function Sidebar() {
               ))}
             </ul>
           </div>
-{/* 
+          {/* 
           <div className="px-6 mt-8">
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               PAGES
@@ -120,5 +127,5 @@ export default function Sidebar() {
         />
       )}
     </>
-  )
+  );
 }
