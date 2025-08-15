@@ -7,10 +7,10 @@ export async function POST(req: NextRequest) {
 
     // Validasi data yang diperlukan
     const requiredFields = [
-      'doc_number', 'id_jasa', 'ship_name', 'master', 'agency', 
+       'ship_name', 'master', 'agency', 
       'loa', 'activity', 'from', 'to', 'last_port', 'next_port', 
-      'pilot', 'pilot_on', 'pilot_off', 'tug_service_id', 
-      'status', 'amount', 'submited_by', 'created_by'
+      'pilot',  
+      'status', 'amount',  'created_by'
     ];
 
     for (const field of requiredFields) {
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
 
     const newService = await prisma.pilotageService.create({
       data: {
-        doc_number: parseInt(body.doc_number),
-        id_jasa: parseInt(body.id_jasa),
+        // doc_number: parseInt(body.doc_number),
+        // id_jasa: parseInt(body.id_jasa),
         ship_name: body.ship_name,
         master: body.master,
         agency: body.agency,

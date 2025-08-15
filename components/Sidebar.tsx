@@ -18,26 +18,26 @@ import {
   Menu,
   User2
 } from 'lucide-react'
+import { FaSheetPlastic, FaShip, FaTable } from 'react-icons/fa6'
+import { CiInboxIn } from 'react-icons/ci'
 
 const menuItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: true, path: '/' },
-  { icon: Package, label: 'Products', path: '/product-label' },
-  { icon: Inbox, label: 'Request', path: '/inbox' },
-  { icon: User2, label: 'Pilot', path: '/pilot' },
-  { icon: User2, label: 'Request Pilot', path: '/request_pilot' },
-  { icon: Users, label: 'Product Stack', path: '/product-stack' },
+  { icon: LayoutDashboard, label: 'Dashboard', active: false, path: '/' },
+  { icon: Inbox, label: 'Pilot Request', path: '/pilotage-service/request' },
+  { icon: FaShip, label: 'Pilot Activity', path: '/pilotage-service' },
+  { icon: FaSheetPlastic, label: 'Reports', path: '/reports' },
 ]
 
-const pagesItems = [
-  { icon: Target, label: 'Pricing', path: '/pricing' },
-  { icon: Calendar, label: 'Calendar', path: '/calendar' },
-  { icon: Table, label: 'To-Do', path: '/todo' },
-  { icon: Users, label: 'Contact', path: '/contact' },
-  { icon: FileText, label: 'Invoice', path: '/invoice' },
-  { icon: Grid, label: 'UI Elements', path: '/ui-elements' },
-  { icon: Users, label: 'Team', path: '/team' },
-  { icon: Table, label: 'Table', path: '/table' },
-]
+// const pagesItems = [
+//   { icon: Target, label: 'Pricing', path: '/pricing' },
+//   { icon: Calendar, label: 'Calendar', path: '/calendar' },
+//   { icon: Table, label: 'To-Do', path: '/todo' },
+//   { icon: Users, label: 'Contact', path: '/contact' },
+//   { icon: FileText, label: 'Invoice', path: '/invoice' },
+//   { icon: Grid, label: 'UI Elements', path: '/ui-elements' },
+//   { icon: Users, label: 'Team', path: '/team' },
+//   { icon: Table, label: 'Table', path: '/table' },
+// ]
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
@@ -65,7 +65,7 @@ export default function Sidebar() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <div className="w-4 h-4 bg-white rounded-sm"></div>
             </div>
-            <span className="text-xl font-bold text-gray-900">DashStack</span>
+            <span className="text-xl font-bold text-gray-900">Panda App</span>
           </div>
         </div>
 
@@ -90,7 +90,7 @@ export default function Sidebar() {
               ))}
             </ul>
           </div>
-
+{/* 
           <div className="px-6 mt-8">
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               PAGES
@@ -108,7 +108,7 @@ export default function Sidebar() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
         </nav>
       </div>
 
