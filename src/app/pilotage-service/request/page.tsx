@@ -1,421 +1,335 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import {
-  Ship,
-  MapPin,
-  User,
-  Calendar,
-  Clock,
-  Package,
-  Filter,
-  Search,
-  Plus,
-} from "lucide-react";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import { useState } from 'react'
+import { Clock, Ship, User, MapPin, Calendar, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import Sidebar from '@/components/Sidebar'
+import Header from '@/components/Header'
 
-interface ServiceRequest {
-  id: string;
-  ship_name: string;
-  activity: string;
-  from: string;
-  to: string;
-  submited_by: string;
-  status: string;
-  created_at: string;
-  priority: string;
-  description?: string;
+interface ShipRequest {
+  id: string
+  shipName: string
+  pilotName: string
+  missionType: string
+  location: string
+  requestedDate: string
+  priority: 'high' | 'medium' | 'low'
+  status: 'pending' | 'approved' | 'rejected'
+  description: string
+  estimatedDuration: string
+  cargo: string
+  weight: string
 }
 
-export default function ServicePage() {
-  const [services, setServices] = useState<ServiceRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
+const mockRequests: ShipRequest[] = [
+  {
+    id: '1',
+    shipName: 'MV Ocean Explorer',
+    pilotName: 'Capt. Ahmad Rahman',
+    missionType: 'Cargo Transport',
+    location: 'Jakarta - Surabaya',
+    requestedDate: '2024-01-15',
+    priority: 'high',
+    status: 'pending',
+    description: 'Urgent cargo delivery for medical supplies',
+    estimatedDuration: '3 days',
+    cargo: 'Medical Supplies',
+    weight: '45,000 tons'
+  },
+  {
+    id: '2',
+    shipName: 'SS Marine Voyager',
+    pilotName: 'Capt. Sarah Johnson',
+    missionType: 'Passenger Ferry',
+    location: 'Bali - Lombok',
+    requestedDate: '2024-01-14',
+    priority: 'medium',
+    status: 'pending',
+    description: 'Regular passenger service route',
+    estimatedDuration: '2 hours',
+    cargo: 'Passengers',
+    weight: '2,500 tons'
+  },
+  {
+    id: '3',
+    shipName: 'HTS Navigator',
+    pilotName: 'Capt. Michael Chen',
+    missionType: 'Oil Transport',
+    location: 'Balikpapan - Singapore',
+    requestedDate: '2024-01-13',
+    priority: 'high',
+    status: 'approved',
+    description: 'Crude oil shipment for refinery',
+    estimatedDuration: '5 days',
+    cargo: 'Crude Oil',
+    weight: '120,000 tons'
+  },
+  {
+    id: '4',
+    shipName: 'MV Island Hopper',
+    pilotName: 'Capt. Lisa Martinez',
+    missionType: 'Supply Run',
+    location: 'Jakarta - Thousand Islands',
+    requestedDate: '2024-01-16',
+    priority: 'low',
+    status: 'pending',
+    description: 'Weekly supply delivery to island communities',
+    estimatedDuration: '1 day',
+    cargo: 'Supplies',
+    weight: '8,500 tons'
+  },
+  {
+    id: '5',
+    shipName: 'SS Pacific Star',
+    pilotName: 'Capt. Robert Wilson',
+    missionType: 'Container Transport',
+    location: 'Singapore - Jakarta',
+    requestedDate: '2024-01-15',
+    priority: 'high',
+    status: 'pending',
+    description: 'Container shipment with electronics',
+    estimatedDuration: '4 days',
+    cargo: 'Electronics',
+    weight: '65,000 tons'
+  },
+  {
+    id: '6',
+    shipName: 'MV Coral Princess',
+    pilotName: 'Capt. Emma Davis',
+    missionType: 'Passenger Cruise',
+    location: 'Bali - Komodo',
+    requestedDate: '2024-01-14',
+    priority: 'medium',
+    status: 'approved',
+    description: 'Luxury cruise passenger service',
+    estimatedDuration: '3 days',
+    cargo: 'Passengers',
+    weight: '15,000 tons'
+  }
+]
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Mock data for demonstration
-        const mockData: ServiceRequest[] = [
-          {
-            id: "1",
-            ship_name: "MV Ocean Explorer",
-            activity: "Loading",
-            from: "Jakarta Port",
-            to: "Surabaya Port",
-            submited_by: "Capt. Ahmad Rahman",
-            status: "pending",
-            priority: "high",
-            created_at: "2024-01-15T10:30:00Z",
-            description: "Container loading for electronics shipment",
-          },
-          {
-            id: "2",
-            ship_name: "SS Marine Voyager",
-            activity: "Unloading",
-            from: "Singapore Port",
-            to: "Jakarta Port",
-            submited_by: "Capt. Sarah Johnson",
-            status: "approved",
-            priority: "medium",
-            created_at: "2024-01-14T15:45:00Z",
-            description: "Automobile unloading operation",
-          },
-          {
-            id: "3",
-            ship_name: "HTS Navigator",
-            activity: "Transit",
-            from: "Balikpapan Port",
-            to: "Singapore Port",
-            submited_by: "Capt. Michael Chen",
-            status: "completed",
-            priority: "low",
-            created_at: "2024-01-13T08:20:00Z",
-            description: "Crude oil transport transit",
-          },
-          {
-            id: "4",
-            ship_name: "MV Island Hopper",
-            activity: "Loading",
-            from: "Surabaya Port",
-            to: "Makassar Port",
-            submited_by: "Capt. Lisa Martinez",
-            status: "pending",
-            priority: "medium",
-            created_at: "2024-01-16T09:15:00Z",
-            description: "Agricultural products loading",
-          },
-        ];
+export default function InboxPage() {
+  const [requests, setRequests] = useState<ShipRequest[]>(mockRequests)
+  const [filter, setFilter] = useState<'pending' | 'approved' | 'rejected'>('pending')
+  const [sortBy, setSortBy] = useState<'date' | 'priority' | 'name'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
-        setServices(mockData);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleStatusUpdate = (id: string, newStatus: 'approved' | 'rejected') => {
+    setRequests(prev => prev.map(req => 
+      req.id === id ? { ...req, status: newStatus } : req
+    ))
+  }
 
-    fetchData();
-  }, []);
+  const filteredRequests = requests.filter(req => req.status === filter)
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "text-yellow-600 bg-yellow-100";
-      case "approved":
-        return "text-blue-600 bg-blue-100";
-      case "completed":
-        return "text-green-600 bg-green-100";
-      case "rejected":
-        return "text-red-600 bg-red-100";
+  const sortedRequests = [...filteredRequests].sort((a, b) => {
+    switch (sortBy) {
+      case 'date':
+        return sortOrder === 'asc' 
+          ? new Date(a.requestedDate).getTime() - new Date(b.requestedDate).getTime()
+          : new Date(b.requestedDate).getTime() - new Date(a.requestedDate).getTime()
+      case 'priority':
+        const priorityOrder = { high: 3, medium: 2, low: 1 }
+        return sortOrder === 'asc'
+          ? priorityOrder[a.priority] - priorityOrder[b.priority]
+          : priorityOrder[b.priority] - priorityOrder[a.priority]
+      case 'name':
+        return sortOrder === 'asc'
+          ? a.shipName.localeCompare(b.shipName)
+          : b.shipName.localeCompare(a.shipName)
       default:
-        return "text-gray-600 bg-gray-100";
+        return 0
     }
-  };
+  })
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high":
-        return "text-red-600 bg-red-100";
-      case "medium":
-        return "text-yellow-600 bg-yellow-100";
-      case "low":
-        return "text-green-600 bg-green-100";
-      default:
-        return "text-gray-600 bg-gray-100";
+      case 'high': return 'text-red-600 bg-red-100'
+      case 'medium': return 'text-yellow-600 bg-yellow-100'
+      case 'low': return 'text-green-600 bg-green-100'
+      default: return 'text-gray-600 bg-gray-100'
     }
-  };
+  }
 
-  const filteredServices = services.filter((service) => {
-    const matchesFilter = filter === "all" || service.status === filter;
-    const matchesSearch =
-      service.ship_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.activity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.to.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved': return 'text-green-600 bg-green-100'
+      case 'rejected': return 'text-red-600 bg-red-100'
+      default: return 'text-yellow-600 bg-yellow-100'
+    }
+  }
 
-  const stats = {
-    total: services.length,
-    pending: services.filter((s) => s.status === "pending").length,
-    approved: services.filter((s) => s.status === "approved").length,
-    completed: services.filter((s) => s.status === "completed").length,
-  };
-
-  if (loading) {
-    return (
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Header />
-          <main className="flex-1 overflow-y-auto p-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="animate-pulse">
-                <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-white rounded-lg shadow p-4">
-                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-                    </div>
-                  ))}
-                </div>
-                <div className="bg-white rounded-lg shadow">
-                  <div className="h-32 bg-gray-200 rounded"></div>
-                </div>
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
-    );
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'approved': return <CheckCircle className="w-4 h-4" />
+      case 'rejected': return <XCircle className="w-4 h-4" />
+      default: return <AlertCircle className="w-4 h-4" />
+    }
   }
 
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
+      
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
+        
         <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
-            {/* Page Header */}
-            <div className="mb-8">
-              <h6 className="text-3xl font-bold text-gray-900 mb-2">
-                Pilotage Request
-              </h6>
-            </div>
-
-            {/* Stats Cards */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-blue-100">
-                    <Ship className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      Total Requests
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {stats.total}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-yellow-100">
-                    <Clock className="w-6 h-6 text-yellow-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Pending</p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {stats.pending}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-blue-100">
-                    <Package className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      Approved
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {stats.approved}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center">
-                  <div className="p-3 rounded-lg bg-green-100">
-                    <Plus className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">
-                      Completed
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {stats.completed}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-
+            {/* Page Title */}
             {/* Controls */}
             <div className="bg-white rounded-lg shadow mb-6">
               <div className="p-4 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  {/* Filter Tabs */}
+                  <div className="border-b border-gray-200">
+                    <nav className="-mb-px flex space-x-8">
+                      {(['pending', 'approved', 'rejected'] as const).map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => setFilter(tab)}
+                          className={`py-2 px-1 border-b-2 font-medium text-sm capitalize ${
+                            filter === tab
+                              ? 'border-primary text-primary'
+                              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                          }`}
+                        >
+                          {tab} ({requests.filter(r => r.status === tab).length})
+                        </button>
+                      ))}
+                    </nav>
+                  </div>
+
+                  {/* Sort Controls */}
                   <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                      <input
-                        type="text"
-                        placeholder="Search services..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-
-                    {/* <select
-                      value={filter}
-                      onChange={(e) => setFilter(e.target.value)}
-                      className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="all">All Status</option>
-                      <option value="pending">Pending</option>
-                      <option value="approved">Approved</option>
-                      <option value="completed">Completed</option>
-                      <option value="rejected">Rejected</option>
-                    </select> */}
-                  </div>
-                  {/* not fix yet, new button could be removed */}
-                  <Link
-                    href="/pilotage-service/request/new"
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    New 
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Service Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredServices.map((service: ServiceRequest) => (
-                <div
-                  key={service.id}
-                  className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                          <Ship className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div className="ml-3">
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            {service.ship_name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {service.activity}
-                          </p>
-                        </div>
-                      </div>
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                          service.status
-                        )}`}
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value as 'date' | 'priority' | 'name')}
+                        className="border border-gray-300 rounded-md px-3 py-1 text-sm"
                       >
-                        {service.status}
-                      </span>
+                        <option value="date">Date</option>
+                        <option value="priority">Priority</option>
+                        <option value="name">Name</option>
+                      </select>
                     </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                        <span>
-                          {service.from} → {service.to}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center text-sm text-gray-600">
-                        <User className="w-4 h-4 mr-2 text-gray-400" />
-                        <span>{service.submited_by}</span>
-                      </div>
-
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                        <span>
-                          {new Date(service.created_at).toLocaleDateString(
-                            "id-ID",
-                            {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            }
-                          )}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(
-                            service.priority
-                          )}`}
-                        >
-                          {service.priority} priority
-                        </span>
-                      </div>
-                    </div>
-
-                    {service.description && (
-                      <p className="mt-3 text-sm text-gray-600 line-clamp-2">
-                        {service.description}
-                      </p>
-                    )}
-
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="flex space-x-2">
-                        <Link
-                          href={`/service-request/${service.id}`}
-                          className="flex-1 text-center px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-                        >
-                          View Details
-                        </Link>
-                        <Link
-                          href={`/service-request/${service.id}/edit`}
-                          className="flex-1 text-center px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                        >
-                          Edit
-                        </Link>
-                      </div>
-                    </div>
+                    <button
+                      onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                      className="text-sm text-gray-600 hover:text-gray-900"
+                    >
+                      {sortOrder === 'asc' ? '↑' : '↓'}
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Empty State */}
-            {filteredServices.length === 0 && (
-              <div className="text-center py-12">
-                <Ship className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No service requests found
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  {searchTerm
-                    ? `No results for "${searchTerm}"`
-                    : "No service requests match your current filters"}
-                </p>
-                <button
-                  onClick={() => {
-                    setSearchTerm("");
-                    setFilter("all");
-                  }}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Clear filters
-                </button>
               </div>
-            )}
+
+              {/* Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ship Details
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Pilot/Captain
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Route & Cargo
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Priority
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {sortedRequests.map((request) => (
+                      <tr key={request.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <Ship className="h-5 w-5 text-blue-600" />
+                              </div>
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">{request.shipName}</div>
+                              <div className="text-sm text-gray-500">{request.missionType}</div>
+                              <div className="text-xs text-gray-400">
+                                {new Date(request.requestedDate).toLocaleDateString('id-ID')}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{request.pilotName}</div>
+                          <div className="text-sm text-gray-500">Duration: {request.estimatedDuration}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">{request.location}</div>
+                          <div className="text-sm text-gray-500">{request.cargo} ({request.weight})</div>
+                          <div className="text-xs text-gray-400 mt-1">{request.description}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(request.priority)}`}>
+                            {request.priority.toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(request.status)}`}>
+                            {getStatusIcon(request.status)}
+                            <span className="ml-1">{request.status.toUpperCase()}</span>
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {request.status === 'pending' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleStatusUpdate(request.id, 'approved')}
+                                className="text-green-600 hover:text-green-900"
+                                title="Approve"
+                              >
+                                <CheckCircle className="w-5 h-5" />
+                              </button>
+                              <button
+                                onClick={() => handleStatusUpdate(request.id, 'rejected')}
+                                className="text-red-600 hover:text-red-900"
+                                title="Reject"
+                              >
+                                <XCircle className="w-5 h-5" />
+                              </button>
+                            </div>
+                          )}
+                          {request.status !== 'pending' && (
+                            <span className="text-gray-400 text-xs">
+                              {request.status === 'approved' ? 'Approved' : 'Rejected'}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Empty State */}
+              {sortedRequests.length === 0 && (
+                <div className="text-center py-12">
+                  <Ship className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No requests found</h3>
+                  <p className="text-gray-600">There are no requests matching your current filter.</p>
+                </div>
+              )}
+            </div>
           </div>
         </main>
       </div>
     </div>
-  );
+  )
 }
