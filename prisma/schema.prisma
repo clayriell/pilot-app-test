@@ -7,6 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Activity {
+  BERTHING
+  UNBERTHING
+  SEA_TRIAL
+  SHIFTING
+}
+
+enum Role {
+  SYS_ADMIN
+  ADMIN
+  PILOT
+}
+enum ServiceStatus {
+  REQUESTED
+  APPROVED
+  IN_PROCESS
+  COMPLETED
+  SUBMITED
+  REJECTED
+  PAID
+  CANCELED
+}
+
+enum Area {
+  TANJUNG_UNCANG
+  BATU_AMPAR
+  KABIL
+}
+
 model Company {
   id       Int              @id @default(autoincrement())
   name     String
@@ -21,7 +50,7 @@ model User {
   name      String
   email     String           @unique
   password  String  @db.VarChar(255)
-  role      String?
+  role      Role             @default(ADMIN)
   picture   String?
   companyId Int?
   company   Company?         @relation(fields: [companyId], references: [id])
@@ -51,7 +80,7 @@ model PilotageService {
   endDate        DateTime? @db.Date
   endTime        DateTime? @db.Time
   note           String?
-  status         String
+  status         ServiceStatus @default(REQUESTED)
   amount         Decimal       @db.Decimal(10,2)
   rate           Int           @default(5)
   submitTime     DateTime?
@@ -91,6 +120,7 @@ model TugService {
   pilotageServiceId Int
   pilotageService   PilotageService  @relation(fields: [pilotageServiceId], references: [id])
   idJasa            Int?           // eksternal
+  status            ServiceStatus    @default(APPROVED)
   amount            Decimal          @db.Decimal(10,2)
 
   tugDetails        TugServiceDetail[]
@@ -110,7 +140,7 @@ model Terminal {
   id     Int     @id @default(autoincrement())
   code   String  @unique
   name   String
-  area   String?
+  area   Area    @default(TANJUNG_UNCANG)
 
   pilotageServicesStart PilotageService[] @relation("StartTerminal")
   pilotageServicesEnd   PilotageService[] @relation("EndTerminal")
