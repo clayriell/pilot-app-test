@@ -1,8 +1,15 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { Search, Bell, Flag } from 'lucide-react'
 
 export default function Header() {
+  const router = useRouter()
+
+  const handleProfileClick = () => {
+    router.push('/profile')
+  }
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -23,8 +30,11 @@ export default function Header() {
             <span className="text-sm text-gray-600">English</span>
           </div>
 
-          {/* Profile */}
-          <div className="flex items-center space-x-3">
+          {/* Profile - Clickable */}
+          <button 
+            onClick={handleProfileClick}
+            className="flex items-center space-x-3 hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors cursor-pointer"
+          >
             <div className="text-right">
               <div className="text-sm font-medium text-gray-900">Moni Roy</div>
               <div className="text-xs text-gray-500">Admin</div>
@@ -32,7 +42,7 @@ export default function Header() {
             <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">M</span>
             </div>
-          </div>
+          </button>
         </div>
       </div>
     </header>

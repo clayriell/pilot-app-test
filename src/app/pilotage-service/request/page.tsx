@@ -232,7 +232,7 @@ export default function InboxPage() {
                         Ship Details
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Pilot/Captain
+                        Requested by
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Route & Cargo
