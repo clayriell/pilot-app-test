@@ -53,6 +53,7 @@ model User {
   role      Role             @default(ADMIN)
   picture   String?
   companyId Int?
+  isActive  Boolean          @default(false)
   company   Company?         @relation(fields: [companyId], references: [id])
 
   // relation ke pilotageService (submitter & creator)
@@ -64,7 +65,7 @@ model PilotageService {
   id             Int           @id @default(autoincrement())
   docNumber      String?
   idJasa         Int?        // data eksternal
-  agencyId       Int?          // mungkin perlu tabel Agency nanti?
+  agencyId       Int          // mungkin perlu tabel Agency nanti?
   companyId      Int?
   company        Company?      @relation(fields: [companyId], references: [id])
   activity       String?
@@ -91,6 +92,7 @@ model PilotageService {
 
   shipDetails    ShipDetail[]
   tugServices    TugService[]
+  agency         Agency @relation(fields:[agencyId], references:[id])
 }
 
 model ShipDetail {
@@ -145,3 +147,14 @@ model Terminal {
   pilotageServicesStart PilotageService[] @relation("StartTerminal")
   pilotageServicesEnd   PilotageService[] @relation("EndTerminal")
 }
+
+model Agency {
+  id Int @id @default(autoincrement())
+  name String
+  address String
+  picName String
+  picNumber String
+  email String
+  
+  pilotageService PilotageService[]
+  }
