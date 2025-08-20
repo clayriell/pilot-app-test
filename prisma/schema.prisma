@@ -55,7 +55,7 @@ model User {
   companyId Int?
   isActive  Boolean          @default(false)
   company   Company?         @relation(fields: [companyId], references: [id])
-
+  
   // relation ke pilotageService (submitter & creator)
   submittedServices PilotageService[] @relation("submittedBy")
   createdServices   PilotageService[] @relation("createdBy")
@@ -71,8 +71,6 @@ model PilotageService {
   activity       String?
   terminalStartId Int?
   terminalEndId   Int?
-  terminalStart   Terminal?    @relation("StartTerminal", fields: [terminalStartId], references: [id])
-  terminalEnd     Terminal?    @relation("EndTerminal", fields: [terminalEndId], references: [id])
   lastPort       String?
   nextPort       String?
   pilotId        Int?
@@ -92,6 +90,8 @@ model PilotageService {
 
   shipDetails    ShipDetail[]
   tugServices    TugService[]
+  terminalStart  Terminal?    @relation("StartTerminal", fields: [terminalStartId], references: [id])
+  terminalEnd    Terminal?    @relation("EndTerminal", fields: [terminalEndId], references: [id])
   agency         Agency @relation(fields:[agencyId], references:[id])
 }
 

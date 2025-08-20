@@ -2,24 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  LayoutDashboard,
-  Package,
-  Heart,
-  Inbox,
-  Bell,
-  Users,
-  Calendar,
-  Table,
-  BarChart,
-  FileText,
-  Target,
-  Grid,
-  Menu,
-  User2,
-} from "lucide-react";
+import { LayoutDashboard, Inbox, Menu } from "lucide-react";
 import { FaSheetPlastic, FaShip, FaTable } from "react-icons/fa6";
-import { CiInboxIn } from "react-icons/ci";
 
 const menuItems = [
   {
