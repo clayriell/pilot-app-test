@@ -1,57 +1,55 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import {prisma} from '@lib/db';
+import {prisma} from "@lib/db";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, password } = body;
+    const { identifier, password } = await req.json();
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email dan password wajib diisi" },
-        { status: 400 }
-      );
-    }
+    const user = await prisma.user.findFirst({
+      where: { 
+        OR : [
+          {username : identifier},
+          {email : identifier}
+      ] 
+      },
+    });
 
-    // cari user
-    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-      return NextResponse.json(
-        { error: "User tidak ditemukan" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // cek password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Password salah" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    // (opsional) buat session atau JWT
-    return NextResponse.json(
+    // cek isActive hanya kalau ada field-nya
+    if ("isActive" in user && !user.isActive) {
+      return NextResponse.json({ error: "User is inactive" }, { status: 403 });
+    }
+
+    const token = jwt.sign(
       {
-        message: "Login berhasil",
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        sub: user.id,
+        username: user.username,
+        role: user.role,
+        companyId: user.companyId,
+        isActive: (user as any).isActive ?? true,
       },
-      { status: 200 }
+      JWT_SECRET,
+      { expiresIn: "1h" }
     );
-  } catch (error) {
-    console.error("Login Error:", error);
-    return NextResponse.json(
-      { error: "Terjadi kesalahan server" },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ token }, { status: 200 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Unknown error" }, { status: 500 });
   }
 }
