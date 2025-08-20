@@ -27,7 +27,6 @@ export default function LoginPage() {
       if (!res.ok) {
         setError(data.error || "Login gagal");
       } else {
-        // ✅ redirect ke dashboard setelah login sukses
         router.push("/dashboard");
       }
     } catch (err) {
@@ -74,7 +73,7 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
         >
-          {loading ? "Loading..." : "Login"}  
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
     </div>

@@ -19,7 +19,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(users, { status: 200 });
+    return NextResponse.json({ message : "Success get users data", user : users}, { status: 200 });
   } catch (error) {
     console.error("Error fetching users:", error);
     return NextResponse.json(

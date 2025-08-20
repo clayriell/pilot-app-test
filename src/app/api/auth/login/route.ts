@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     }
 
     // cek isActive hanya kalau ada field-nya
-    if ("isActive" in user && !user.isActive) {
+    if (!user.isActive) {
       return NextResponse.json({ error: "User is inactive" }, { status: 403 });
     }
 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       { expiresIn: "1h" }
     );
 
-    return NextResponse.json({ token }, { status: 200 });
+    return NextResponse.json({ token ,message: "Login Successful"}, { status: 200});
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
