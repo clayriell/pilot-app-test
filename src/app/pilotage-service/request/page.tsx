@@ -47,9 +47,9 @@ export default function PilotagePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/pilotage-service");
-        const data: PilotageService[] = await res.json();
-        setServices(data);
+        const res = await fetch("/api/pilotage-service/request");
+        const json = await res.json();
+        setServices(json.data);
       } catch (err) {
         console.error(err);
       } finally {

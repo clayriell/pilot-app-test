@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 export async function GET() {
   try {
     const pilotageService = await prisma.pilotageService.findMany({
+      where : {status: "REQUESTED"},
       include: {
         agency: true,
         terminalStart: true,
