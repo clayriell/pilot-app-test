@@ -10,7 +10,9 @@ export async function GET() {
         terminalStart: true,
         terminalEnd: true,
         shipDetails: true,
-      },
+        tugServices : {include : {tugDetails : {include : {assistTug : true} }}}
+      }
+       ,
       orderBy: { id: 'desc' },
     });
 

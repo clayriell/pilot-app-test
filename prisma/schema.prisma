@@ -134,8 +134,8 @@ model TugServiceDetail {
   tugService   TugService @relation(fields: [tugServiceId], references: [id])
   assistTugId Int
   assistTug   AssistTug  @relation(fields: [assistTugId], references: [id])
-  connectTime DateTime
-  disconnectTime DateTime
+  connectTime DateTime?
+  disconnectTime DateTime?
 }
 
 model Terminal {
